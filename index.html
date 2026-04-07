@@ -1,0 +1,1853 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 مولّد كلمات المرور الآمنة</title>
+    <meta name="description" content="تطبيق إنشاء كلمات مرور قوية وآمنة">
+    <meta name="theme-color" content="#0a1628">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a1628'/><text x='50' y='70' font-size='60' text-anchor='middle' fill='%23d4a853'>🔐</text></svg>">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;800;900&display=swap');
+
+        :root {
+            --gold: #d4a853;
+            --gold-light: #f0d68a;
+            --gold-dark: #b8860b;
+            --emerald: #1a8a5c;
+            --emerald-light: #2ecc71;
+            --navy: #0a1628;
+            --navy-light: #121f3d;
+            --navy-mid: #1a2d52;
+            --teal: #1abc9c;
+            --text: #e8e0d0;
+            --text-muted: #8a9bb5;
+            --card-bg: rgba(10, 22, 40, 0.7);
+            --card-border: rgba(212, 168, 83, 0.15);
+            --danger: #e74c3c;
+            --success: #2ecc71;
+            --warning: #f39c12;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--navy);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ===== ISLAMIC BACKGROUND ===== */
+        .islamic-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            animation: orbFloat 20s ease-in-out infinite;
+        }
+
+        .glow-orb:nth-child(1) {
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(212, 168, 83, 0.15), transparent);
+            top: -150px; right: -100px;
+            animation-duration: 25s;
+        }
+
+        .glow-orb:nth-child(2) {
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(26, 138, 92, 0.12), transparent);
+            bottom: -100px; left: -100px;
+            animation-duration: 30s;
+            animation-delay: -5s;
+        }
+
+        .glow-orb:nth-child(3) {
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(212, 168, 83, 0.08), transparent);
+            top: 40%; left: 30%;
+            animation-duration: 22s;
+            animation-delay: -10s;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(80px, -40px) scale(1.08); }
+            50% { transform: translate(-40px, 80px) scale(0.92); }
+            75% { transform: translate(60px, 30px) scale(1.04); }
+        }
+
+        .grid-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            background-image:
+                linear-gradient(rgba(212, 168, 83, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(212, 168, 83, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+        }
+
+        #particles-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* ===== FLOATING ISLAMIC PATTERNS ===== */
+        .floating-pattern {
+            position: fixed;
+            z-index: 0;
+            opacity: 0.03;
+            pointer-events: none;
+            animation: patternFloat 30s ease-in-out infinite;
+        }
+
+        .floating-pattern:nth-child(1) { top: 10%; right: 5%; animation-delay: 0s; }
+        .floating-pattern:nth-child(2) { bottom: 15%; left: 5%; animation-delay: -10s; }
+        .floating-pattern:nth-child(3) { top: 50%; right: 2%; animation-delay: -20s; }
+
+        @keyframes patternFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(5deg); }
+        }
+
+        /* ===== MAIN CONTAINER ===== */
+        .app-container {
+            position: relative;
+            z-index: 10;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            min-height: 100vh;
+        }
+
+        /* ===== DECORATIVE TOP ===== */
+        .decorative-top {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            margin-bottom: 10px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .decorative-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .decorative-line::before,
+        .decorative-line::after {
+            content: '';
+            flex: 1;
+            max-width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
+        .decorative-star {
+            width: 30px; height: 30px;
+            animation: starRotate 20s linear infinite;
+        }
+
+        @keyframes starRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* ===== HEADER ===== */
+        .app-header {
+            text-align: center;
+            padding: 20px 0 30px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .arch-frame {
+            position: relative;
+            display: inline-block;
+            padding: 20px 50px 10px;
+        }
+
+        .arch-frame::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 50%; transform: translateX(-50%);
+            width: 120px; height: 60px;
+            border: 2px solid rgba(212, 168, 83, 0.3);
+            border-bottom: none;
+            border-radius: 60px 60px 0 0;
+        }
+
+        .arch-frame::after {
+            content: '';
+            position: absolute;
+            top: 5px; left: 50%; transform: translateX(-50%);
+            width: 100px; height: 50px;
+            border: 1px solid rgba(212, 168, 83, 0.15);
+            border-bottom: none;
+            border-radius: 50px 50px 0 0;
+        }
+
+        .logo-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .logo-icon {
+            width: 90px; height: 90px;
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            box-shadow:
+                0 10px 40px rgba(212, 168, 83, 0.3),
+                0 0 60px rgba(212, 168, 83, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            animation: logoPulse 3s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+            animation: logoShine 4s ease-in-out infinite;
+        }
+
+        .logo-ring-outer {
+            position: absolute;
+            top: -14px; left: -14px; right: -14px; bottom: -14px;
+            border: 2px solid rgba(212, 168, 83, 0.2);
+            border-radius: 26px;
+            animation: ringRotate 15s linear infinite;
+        }
+
+        .logo-ring-outer::before {
+            content: '';
+            position: absolute;
+            top: -4px; left: 50%;
+            width: 8px; height: 8px;
+            background: var(--gold);
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--gold), 0 0 30px rgba(212, 168, 83, 0.3);
+        }
+
+        .logo-ring-inner {
+            position: absolute;
+            top: -8px; left: -8px; right: -8px; bottom: -8px;
+            border: 1px solid rgba(26, 138, 92, 0.25);
+            border-radius: 24px;
+            animation: ringRotate 12s linear infinite reverse;
+        }
+
+        .logo-ring-inner::after {
+            content: '';
+            position: absolute;
+            bottom: -3px; left: 50%;
+            width: 6px; height: 6px;
+            background: var(--emerald-light);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--emerald-light);
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 10px 40px rgba(212, 168, 83, 0.3); }
+            50% { transform: scale(1.04); box-shadow: 0 15px 50px rgba(212, 168, 83, 0.5); }
+        }
+
+        @keyframes logoShine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        @keyframes ringRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .app-title {
+            font-family: 'Amiri', serif;
+            font-size: 2.4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--emerald-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+
+        .app-subtitle {
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        .bismillah {
+            font-family: 'Amiri', serif;
+            font-size: 1.1rem;
+            color: var(--gold);
+            opacity: 0.6;
+            margin-bottom: 25px;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        /* ===== ISLAMIC CARD ===== */
+        .islamic-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out both;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .islamic-card:hover {
+            border-color: rgba(212, 168, 83, 0.3);
+            box-shadow: 0 8px 32px rgba(212, 168, 83, 0.08);
+        }
+
+        .islamic-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            opacity: 0.4;
+        }
+
+        .islamic-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            opacity: 0.2;
+        }
+
+        .card-corner {
+            position: absolute;
+            width: 40px; height: 40px;
+            opacity: 0.2;
+            transition: opacity 0.3s ease;
+        }
+
+        .islamic-card:hover .card-corner { opacity: 0.4; }
+        .card-corner-tl { top: 8px; right: 8px; }
+        .card-corner-tr { top: 8px; left: 8px; transform: scaleX(-1); }
+        .card-corner-bl { bottom: 8px; right: 8px; transform: scaleY(-1); }
+        .card-corner-br { bottom: 8px; left: 8px; transform: scale(-1, -1); }
+
+        .islamic-card:nth-child(1) { animation-delay: 0.1s; }
+        .islamic-card:nth-child(2) { animation-delay: 0.15s; }
+        .islamic-card:nth-child(3) { animation-delay: 0.2s; }
+        .islamic-card:nth-child(4) { animation-delay: 0.25s; }
+        .islamic-card:nth-child(5) { animation-delay: 0.3s; }
+
+        .card-title {
+            font-family: 'Amiri', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 22px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--gold-light);
+        }
+
+        .card-title .icon {
+            width: 42px; height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            background: rgba(212, 168, 83, 0.1);
+            border: 1px solid rgba(212, 168, 83, 0.15);
+        }
+
+        /* ===== PASSWORD DISPLAY ===== */
+        .password-display {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(212, 168, 83, 0.15);
+            border-radius: 16px;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .password-display::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            opacity: 0.3;
+        }
+
+        .password-display:hover {
+            border-color: rgba(212, 168, 83, 0.3);
+            box-shadow: 0 0 30px rgba(212, 168, 83, 0.05);
+        }
+
+        .password-text {
+            flex: 1;
+            font-family: 'Courier New', 'Fira Code', monospace;
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #fff;
+            word-break: break-all;
+            direction: ltr;
+            text-align: left;
+            min-height: 30px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .password-text .char {
+            display: inline-block;
+            animation: charAppear 0.3s ease-out both;
+            transition: color 0.2s ease;
+        }
+
+        .password-text .char.letter { color: var(--gold-light); }
+        .password-text .char.number { color: var(--teal); }
+        .password-text .char.symbol { color: var(--emerald-light); }
+        .password-text .char.upper { color: var(--gold); }
+
+        @keyframes charAppear {
+            from { opacity: 0; transform: translateY(-8px) scale(0.5); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .password-placeholder {
+            color: var(--text-muted);
+            font-size: 1rem;
+            font-family: 'Tajawal', sans-serif;
+            letter-spacing: 0;
+        }
+
+        .password-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .action-btn {
+            width: 44px; height: 44px;
+            border-radius: 12px;
+            border: 1px solid rgba(212, 168, 83, 0.15);
+            background: rgba(212, 168, 83, 0.05);
+            color: var(--gold-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn:hover {
+            background: rgba(212, 168, 83, 0.15);
+            border-color: rgba(212, 168, 83, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(212, 168, 83, 0.15);
+        }
+
+        .action-btn:active { transform: translateY(0); }
+
+        .action-btn.copied {
+            background: rgba(46, 204, 113, 0.15);
+            border-color: rgba(46, 204, 113, 0.3);
+        }
+
+        .action-btn .tooltip {
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%) translateY(5px);
+            background: rgba(10, 22, 40, 0.95);
+            color: var(--gold-light);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            font-family: 'Tajawal', sans-serif;
+            border: 1px solid rgba(212, 168, 83, 0.2);
+        }
+
+        .action-btn:hover .tooltip {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ===== STRENGTH METER ===== */
+        .strength-meter { margin-bottom: 20px; }
+
+        .strength-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .strength-label span { font-size: 0.9rem; color: var(--text-muted); }
+
+        .strength-label .strength-text {
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .strength-bar-container {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .strength-bar {
+            height: 100%;
+            border-radius: 3px;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 0%;
+            position: relative;
+        }
+
+        .strength-bar::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: strengthShine 2s ease-in-out infinite;
+        }
+
+        @keyframes strengthShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .strength-weak .strength-bar { width: 25%; background: linear-gradient(90deg, var(--danger), #c0392b); }
+        .strength-weak .strength-text { color: var(--danger); }
+
+        .strength-fair .strength-bar { width: 50%; background: linear-gradient(90deg, var(--warning), #e67e22); }
+        .strength-fair .strength-text { color: var(--warning); }
+
+        .strength-good .strength-bar { width: 75%; background: linear-gradient(90deg, var(--teal), var(--emerald)); }
+        .strength-good .strength-text { color: var(--teal); }
+
+        .strength-strong .strength-bar { width: 100%; background: linear-gradient(90deg, var(--emerald), var(--emerald-light)); }
+        .strength-strong .strength-text { color: var(--emerald-light); }
+
+        .strength-very-strong .strength-bar {
+            width: 100%;
+            background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-light));
+            box-shadow: 0 0 20px rgba(212, 168, 83, 0.5);
+        }
+        .strength-very-strong .strength-text { color: var(--gold-light); }
+
+        /* ===== STATS ===== */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 16px 12px;
+            background: rgba(212, 168, 83, 0.03);
+            border: 1px solid rgba(212, 168, 83, 0.08);
+            border-radius: 14px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-item::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(212, 168, 83, 0.2), transparent);
+        }
+
+        .stat-item:hover { border-color: rgba(212, 168, 83, 0.2); }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 4px;
+        }
+
+        .stat-label { font-size: 0.75rem; color: var(--text-muted); }
+
+        /* ===== SLIDER ===== */
+        .slider-group { margin-bottom: 10px; }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .slider-header label { font-size: 0.95rem; font-weight: 500; }
+
+        .slider-value {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--gold);
+            min-width: 45px;
+            text-align: center;
+            background: rgba(212, 168, 83, 0.08);
+            padding: 4px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(212, 168, 83, 0.15);
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-runnable-track {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 3px;
+        }
+
+        input[type="range"]::-moz-range-track {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 3px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px; height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+            border: 3px solid var(--navy);
+            box-shadow: 0 0 15px rgba(212, 168, 83, 0.4);
+            margin-top: -9px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 25px rgba(212, 168, 83, 0.6);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 24px; height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+            border: 3px solid var(--navy);
+            box-shadow: 0 0 15px rgba(212, 168, 83, 0.4);
+            cursor: pointer;
+        }
+
+        /* ===== OPTIONS ===== */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .option-item:hover {
+            background: rgba(212, 168, 83, 0.06);
+            border-color: rgba(212, 168, 83, 0.15);
+        }
+
+        .option-item.active {
+            background: rgba(212, 168, 83, 0.08);
+            border-color: rgba(212, 168, 83, 0.25);
+        }
+
+        .custom-toggle {
+            width: 46px; height: 24px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            position: relative;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .custom-toggle::after {
+            content: '';
+            position: absolute;
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            background: #fff;
+            top: 3px; right: 3px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .option-item.active .custom-toggle {
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+        }
+
+        .option-item.active .custom-toggle::after { right: 25px; }
+
+        .option-info { flex: 1; }
+        .option-label { font-size: 0.9rem; font-weight: 600; margin-bottom: 2px; }
+        .option-preview {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-family: 'Courier New', monospace;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .exclude-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(212, 168, 83, 0.1);
+            border-radius: 12px;
+            padding: 14px 18px;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            direction: ltr;
+            text-align: left;
+            outline: none;
+            transition: all 0.3s ease;
+            margin-top: 12px;
+        }
+
+        .exclude-input:focus {
+            border-color: rgba(212, 168, 83, 0.3);
+            box-shadow: 0 0 20px rgba(212, 168, 83, 0.05);
+        }
+
+        .exclude-input::placeholder {
+            color: var(--text-muted);
+            font-family: 'Tajawal', sans-serif;
+            direction: rtl;
+            text-align: right;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 16px;
+            cursor: pointer;
+        }
+
+        .checkbox-wrapper input[type="checkbox"] { display: none; }
+
+        .custom-checkbox {
+            width: 22px; height: 22px;
+            border: 2px solid rgba(212, 168, 83, 0.2);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .custom-checkbox svg {
+            width: 14px; height: 14px;
+            fill: none; stroke: var(--navy);
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.2s ease;
+        }
+
+        .checkbox-wrapper input:checked + .custom-checkbox {
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+            border-color: var(--gold);
+        }
+
+        .checkbox-wrapper input:checked + .custom-checkbox svg {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* ===== GENERATE BUTTON ===== */
+        .generate-btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 16px;
+            font-family: 'Amiri', serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--navy);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light), var(--gold));
+            background-size: 300% 300%;
+            animation: gradientShift 5s ease-in-out infinite;
+            box-shadow:
+                0 8px 30px rgba(212, 168, 83, 0.25),
+                0 0 60px rgba(212, 168, 83, 0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow:
+                0 12px 40px rgba(212, 168, 83, 0.4),
+                0 0 80px rgba(212, 168, 83, 0.15);
+        }
+
+        .generate-btn:active { transform: translateY(-1px); }
+
+        .generate-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+            transition: left 0.7s ease;
+        }
+
+        .generate-btn:hover::before { left: 100%; }
+
+        .generate-btn .btn-icon {
+            font-size: 1.5rem;
+            transition: transform 0.4s ease;
+        }
+
+        .generate-btn:hover .btn-icon { transform: rotate(180deg); }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* ===== HISTORY ===== */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 280px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(212, 168, 83, 0.2) transparent;
+        }
+
+        .history-list::-webkit-scrollbar { width: 4px; }
+        .history-list::-webkit-scrollbar-track { background: transparent; }
+        .history-list::-webkit-scrollbar-thumb { background: rgba(212, 168, 83, 0.2); border-radius: 2px; }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            animation: slideInRight 0.4s ease-out both;
+            transition: all 0.3s ease;
+        }
+
+        .history-item:hover {
+            background: rgba(212, 168, 83, 0.06);
+            border-color: rgba(212, 168, 83, 0.12);
+        }
+
+        .history-password {
+            flex: 1;
+            font-family: 'Courier New', monospace;
+            font-size: 0.82rem;
+            color: var(--text);
+            direction: ltr;
+            text-align: left;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .history-time { font-size: 0.7rem; color: var(--text-muted); flex-shrink: 0; }
+
+        .history-copy-btn {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            border: 1px solid rgba(212, 168, 83, 0.1);
+            background: rgba(212, 168, 83, 0.04);
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .history-copy-btn:hover {
+            background: rgba(212, 168, 83, 0.15);
+            color: var(--gold-light);
+            border-color: rgba(212, 168, 83, 0.25);
+        }
+
+        .empty-history {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .empty-history .empty-icon { font-size: 2.5rem; margin-bottom: 10px; opacity: 0.4; }
+
+        .clear-history-btn {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(231, 76, 60, 0.15);
+            border-radius: 12px;
+            background: rgba(231, 76, 60, 0.04);
+            color: var(--danger);
+            font-family: 'Tajawal', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 16px;
+        }
+
+        .clear-history-btn:hover {
+            background: rgba(231, 76, 60, 0.12);
+            border-color: rgba(231, 76, 60, 0.3);
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            top: 20px; left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: rgba(10, 22, 40, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 168, 83, 0.3);
+            border-radius: 14px;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 10000;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--gold-light);
+        }
+
+        .toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* ===== INSTALL BANNER ===== */
+        .install-banner {
+            position: fixed;
+            bottom: 20px; left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(10, 22, 40, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 168, 83, 0.3);
+            border-radius: 16px;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            z-index: 1000;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 90%;
+        }
+
+        .install-banner.show { transform: translateX(-50%) translateY(0); }
+        .install-banner p { font-size: 0.9rem; flex: 1; }
+
+        .install-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+            color: var(--navy);
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .install-btn:hover { transform: scale(1.05); }
+        .install-dismiss {
+            background: none; border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        /* ===== FOOTER ===== */
+        .app-footer {
+            text-align: center;
+            padding: 25px 0 35px;
+            animation: fadeInUp 0.8s ease-out 0.5s both;
+        }
+
+        .footer-ornament {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .footer-ornament::before,
+        .footer-ornament::after {
+            content: '';
+            width: 60px; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(212, 168, 83, 0.3), transparent);
+        }
+
+        .app-footer p {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            line-height: 1.8;
+        }
+
+        /* ===== BURST ===== */
+        .particle-burst {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .burst-particle {
+            position: absolute;
+            border-radius: 50%;
+            animation: burstAnim 0.8s ease-out forwards;
+        }
+
+        @keyframes burstAnim {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+            20%, 40%, 60%, 80% { transform: translateX(4px); }
+        }
+
+        .shake { animation: shake 0.5s ease-in-out; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            .app-container { padding: 20px 14px; }
+            .islamic-card { padding: 22px 16px; border-radius: 16px; }
+            .app-title { font-size: 1.8rem; }
+            .options-grid { grid-template-columns: 1fr; }
+            .stats-bar { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .stat-item { padding: 12px 8px; }
+            .stat-value { font-size: 1.2rem; }
+            .password-text { font-size: 1rem; }
+            .generate-btn { padding: 16px; font-size: 1.15rem; }
+        }
+
+        .spinner {
+            width: 22px; height: 22px;
+            border: 3px solid rgba(10, 22, 40, 0.2);
+            border-top-color: var(--navy);
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <!-- Islamic Background -->
+    <div class="islamic-bg">
+        <div class="glow-orb"></div>
+        <div class="glow-orb"></div>
+        <div class="glow-orb"></div>
+        <svg class="pattern-overlay" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0.04;pointer-events:none;">
+            <defs>
+                <pattern id="islamicPattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+                    <polygon points="50,5 58,35 90,35 64,52 72,82 50,65 28,82 36,52 10,35 42,35" fill="none" stroke="rgba(212,168,83,0.3)" stroke-width="0.5"/>
+                    <polygon points="50,15 55,35 75,35 59,46 64,66 50,55 36,66 41,46 25,35 45,35" fill="none" stroke="rgba(212,168,83,0.2)" stroke-width="0.3"/>
+                    <circle cx="50" cy="50" r="8" fill="none" stroke="rgba(212,168,83,0.2)" stroke-width="0.3"/>
+                </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#islamicPattern)"/>
+        </svg>
+    </div>
+
+    <div class="grid-overlay"></div>
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- Floating Islamic Patterns -->
+    <div class="floating-pattern">
+        <svg width="120" height="120" viewBox="0 0 100 100">
+            <polygon points="50,2 61,35 98,35 68,57 79,91 50,70 21,91 32,57 2,35 39,35" fill="none" stroke="rgba(212,168,83,0.5)" stroke-width="0.8"/>
+            <polygon points="50,20 57,40 78,40 61,52 67,72 50,60 33,72 39,52 22,40 43,40" fill="none" stroke="rgba(212,168,83,0.3)" stroke-width="0.5"/>
+        </svg>
+    </div>
+    <div class="floating-pattern">
+        <svg width="100" height="100" viewBox="0 0 100 100">
+            <polygon points="50,2 61,35 98,35 68,57 79,91 50,70 21,91 32,57 2,35 39,35" fill="none" stroke="rgba(26,138,92,0.5)" stroke-width="0.8"/>
+            <circle cx="50" cy="50" r="15" fill="none" stroke="rgba(26,138,92,0.3)" stroke-width="0.5"/>
+        </svg>
+    </div>
+    <div class="floating-pattern">
+        <svg width="80" height="80" viewBox="0 0 100 100">
+            <rect x="20" y="20" width="60" height="60" fill="none" stroke="rgba(212,168,83,0.5)" stroke-width="0.5" transform="rotate(45 50 50)"/>
+            <rect x="30" y="30" width="40" height="40" fill="none" stroke="rgba(212,168,83,0.3)" stroke-width="0.5"/>
+        </svg>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <span>✅</span>
+        <span id="toast-text">تم النسخ بنجاح!</span>
+    </div>
+
+    <!-- Install Banner -->
+    <div class="install-banner" id="installBanner">
+        <p>📥 ثبّت التطبيق على جهازك للوصول السريع!</p>
+        <button class="install-btn" id="installBtn">تثبيت الآن</button>
+        <button class="install-dismiss" id="installDismiss">✕</button>
+    </div>
+
+    <!-- Main App -->
+    <div class="app-container">
+
+        <!-- Decorative Top -->
+        <div class="decorative-top">
+            <div class="decorative-line">
+                <div class="decorative-star">
+                    <svg viewBox="0 0 100 100">
+                        <polygon points="50,5 61,35 95,35 68,55 79,85 50,65 21,85 32,55 5,35 39,35" fill="none" stroke="rgba(212,168,83,0.6)" stroke-width="1.5"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <header class="app-header">
+            <div class="arch-frame">
+                <div class="logo-container">
+                    <div class="logo-icon">🔐</div>
+                    <div class="logo-ring-outer"></div>
+                    <div class="logo-ring-inner"></div>
+                </div>
+                <h1 class="app-title">مولّد كلمات المرور</h1>
+                <p class="app-subtitle">أنشئ كلمات مرور قوية وآمنة في ثوانٍ</p>
+            </div>
+            <div class="bismillah">﷽</div>
+        </header>
+
+        <!-- Password Display -->
+        <div class="islamic-card">
+            <svg class="card-corner card-corner-tl" viewBox="0 0 40 40">
+                <path d="M0,0 L40,0 L40,5 L5,5 L5,40 L0,40 Z" fill="rgba(212,168,83,0.3)"/>
+                <path d="M10,0 L10,3 L3,3 L3,10 L0,10 L0,0 Z" fill="rgba(212,168,83,0.2)"/>
+            </svg>
+            <svg class="card-corner card-corner-tr" viewBox="0 0 40 40">
+                <path d="M0,0 L40,0 L40,5 L5,5 L5,40 L0,40 Z" fill="rgba(212,168,83,0.3)"/>
+            </svg>
+            <svg class="card-corner card-corner-bl" viewBox="0 0 40 40">
+                <path d="M0,0 L40,0 L40,5 L5,5 L5,40 L0,40 Z" fill="rgba(212,168,83,0.3)"/>
+            </svg>
+            <svg class="card-corner card-corner-br" viewBox="0 0 40 40">
+                <path d="M0,0 L40,0 L40,5 L5,5 L5,40 L0,40 Z" fill="rgba(212,168,83,0.3)"/>
+            </svg>
+
+            <div class="card-title">
+                <div class="icon">🔑</div>
+                <span>كلمة المرور المُنشأة</span>
+            </div>
+
+            <div class="password-display" id="passwordDisplay">
+                <div class="password-text" id="passwordText">
+                    <span class="password-placeholder">اضغط على زر الإنشاء</span>
+                </div>
+                <div class="password-actions">
+                    <button class="action-btn" id="copyBtn" onclick="copyPassword()">
+                        <span class="tooltip">نسخ</span>📋
+                    </button>
+                    <button class="action-btn" id="refreshBtn" onclick="generatePassword()">
+                        <span class="tooltip">إعادة إنشاء</span>🔄
+                    </button>
+                </div>
+            </div>
+
+            <div class="strength-meter" id="strengthMeter">
+                <div class="strength-label">
+                    <span>قوة كلمة المرور</span>
+                    <span class="strength-text" id="strengthText">—</span>
+                </div>
+                <div class="strength-bar-container">
+                    <div class="strength-bar" id="strengthBar"></div>
+                </div>
+            </div>
+
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-value" id="statLength">0</div>
+                    <div class="stat-label">عدد الأحرف</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="statEntropy">0</div>
+                    <div class="stat-label">الإنتروبيا (بت)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Length Slider -->
+        <div class="islamic-card">
+            <svg class="card-corner card-corner-tl" viewBox="0 0 40 40">
+                <path d="M0,0 L40,0 L40,5 L5,5 L5,40 L0,40 Z" fill="rgba(212,168,83,0.3)"/>
+            </svg>
+            <svg class="card-corner card-corner-tr" viewBox="0 0 40 40">
+                <path d="M0,0 L40,0 L40,5 L5,5 L5,40 L0,40 Z" fill="rgba(212,168,83,0.3)"/>
+            </svg>
+            <svg class="card-corner card-corner-bl" viewBox="0 0 40 40">
+                <path d="M0,0 L40,0 L40,5 L5,5 L5,40 L0,40 Z" fill="rgba(212,168,83,0.3)"/>
+            </svg>
+            <svg class="card-corner card-corner-br" viewBox="0 0 40 40">
+                <path d="M0,0 L40,0 L40,5 L5,5 L5,40 L0,40 Z" fill="rgba(212,168,83,0.3)"/>
+            </svg>
+
+            <div class="card-title">
+                <div class="icon">📏</div>
+                <span>طول كلمة المرور</span>
+            </div>
+            <div class="slider-group">
+                <div class="slider-header">
+                    <label>عدد الأحرف</label>
+                    <div class="slider-value" id="lengthValue">16</div>
+                </div>
+                <input type="range" id="lengthSlider" min="4" max="128" value="16" oninput="updateLength()">
+            </div>
+        </div>
+
+        <!-- Options -->
+        <div class="islamic-card">
+            <svg class="card-corner card-corner-tl" viewBox="0 0 40 40">
+                <path d="M0,0 L40,0 L40,5 L5,5 L5,40 L0,40 Z" fill="rgba(212,168,83,0.3)"/>
+            </svg>
+            <svg class="card-corner card-corner-tr" viewBox="0 0 40 40">
+                <path d="M0,0 L40,0 L40,5 L5,5 L5,40 L0,40 Z" fill="rgba(212,168,83,0.3)"/>
+            </svg>
+            <svg class="card-corner card-corner-bl" viewBox="0 0 40 40">
+                <path d="M0,0 L40,0 L40,5 L5,5 L5,40 L0,40 Z" fill="rgba(212,168,83,0.3)"/>
+            </svg>
+            <svg class="card-corner card-corner-br" viewBox="0 0 40 40">
+                <path d="M0,0 L40,0 L40,5 L5,5 L5,40 L0,40 Z" fill="rgba(212,168,83,0.3)"/>
+            </svg>
+
+            <div class="card-title">
+                <div class="icon">⚙️</div>
+                <span>خيارات كلمة المرور</span>
+            </div>
+            <div class="options-grid">
+                <div class="option-item active" data-option="uppercase" onclick="toggleOption(this)">
+                    <div class="custom-toggle"></div>
+                    <div class="option-info">
+                        <div class="option-label">أحرف كبيرة</div>
+                        <div class="option-preview">A B C D E F</div>
+                    </div>
+                </div>
+                <div class="option-item active" data-option="lowercase" onclick="toggleOption(this)">
+                    <div class="custom-toggle"></div>
+                    <div class="option-info">
+                        <div class="option-label">أحرف صغيرة</div>
+                        <div class="option-preview">a b c d e f</div>
+                    </div>
+                </div>
+                <div class="option-item active" data-option="numbers" onclick="toggleOption(this)">
+                    <div class="custom-toggle"></div>
+                    <div class="option-info">
+                        <div class="option-label">أرقام</div>
+                        <div class="option-preview">0 1 2 3 4 5</div>
+                    </div>
+                </div>
+                <div class="option-item active" data-option="symbols" onclick="toggleOption(this)">
+                    <div class="custom-toggle"></div>
+                    <div class="option-info">
+                        <div class="option-label">رموز خاصة</div>
+                        <div class="option-preview">! @ # $ % &</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 18px;">
+                <label style="font-size: 0.9rem; font-weight: 500; display: block; margin-bottom: 4px; color: var(--text-muted);">
+                    استبعاد أحرف معينة
+                </label>
+                <input type="text" class="exclude-input" id="excludeChars" placeholder="مثال: 0OoIl1 (أحرف متشابهة)">
+            </div>
+
+            <label class="checkbox-wrapper">
+                <input type="checkbox" id="pronounceable">
+                <div class="custom-checkbox">
+                    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <span style="font-size: 0.9rem;">كلمة مرور سهلة النطق</span>
+            </label>
+        </div>
+
+        <!-- Generate Button -->
+        <button class="generate-btn" id="generateBtn" onclick="generatePassword()">
+            <span class="btn-icon">✦</span>
+            <span>إنشاء كلمة المرور</span>
+            <div class="spinner" id="spinner"></div>
+        </button>
+
+        <!-- History -->
+        <div class="islamic-card">
+            <svg class="card-corner card-corner-tl" viewBox="0 0 40 40">
+                <path d="M0,0 L40,0 L40,5 L5,5 L5,40 L0,40 Z" fill="rgba(212,168,83,0.3)"/>
+            </svg>
+            <svg class="card-corner card-corner-tr" viewBox="0 0 40 40">
+                <path d="M0,0 L40,0 L40,5 L5,5 L5,40 L0,40 Z" fill="rgba(212,168,83,0.3)"/>
+            </svg>
+            <svg class="card-corner card-corner-bl" viewBox="0 0 40 40">
+                <path d="M0,0 L40,0 L40,5 L5,5 L5,40 L0,40 Z" fill="rgba(212,168,83,0.3)"/>
+            </svg>
+            <svg class="card-corner card-corner-br" viewBox="0 0 40 40">
+                <path d="M0,0 L40,0 L40,5 L5,5 L5,40 L0,40 Z" fill="rgba(212,168,83,0.3)"/>
+            </svg>
+
+            <div class="card-title">
+                <div class="icon">📜</div>
+                <span>سجل كلمات المرور</span>
+            </div>
+            <div id="historyList">
+                <div class="empty-history">
+                    <div class="empty-icon">📝</div>
+                    <div>لا توجد كلمات مرور بعد</div>
+                </div>
+            </div>
+            <button class="clear-history-btn" id="clearHistoryBtn" onclick="clearHistory()" style="display: none;">
+                🗑️ مسح السجل
+            </button>
+        </div>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-ornament">
+                <svg width="20" height="20" viewBox="0 0 100 100">
+                    <polygon points="50,10 61,35 90,35 68,52 79,78 50,60 21,78 32,52 10,35 39,35" fill="none" stroke="rgba(212,168,83,0.5)" stroke-width="1"/>
+                </svg>
+            </div>
+            <p>🔐 جميع كلمات المرور تُولّد محلياً على جهازك — لا يتم إرسال أي بيانات</p>
+            <p style="margin-top: 4px; font-family: 'Amiri', serif; color: var(--gold); opacity: 0.5;">
+                ﴿ وَقُل رَّبِّ زِدْنِي عِلْمًا ﴾
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // ===== PARTICLES =====
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let mouse = { x: null, y: null };
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        class Particle {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+                this.opacity = Math.random() * 0.5 + 0.1;
+                this.color = ['#d4a853', '#f0d68a', '#1abc9c', '#2ecc71', '#b8860b'][Math.floor(Math.random() * 5)];
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (mouse.x !== null) {
+                    const dx = mouse.x - this.x;
+                    const dy = mouse.y - this.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 150) {
+                        const force = (150 - dist) / 150;
+                        this.x -= (dx / dist) * force * 2;
+                        this.y -= (dy / dist) * force * 2;
+                    }
+                }
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.opacity;
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        function initParticles() {
+            const count = Math.min(70, Math.floor(window.innerWidth * window.innerHeight / 18000));
+            particles = [];
+            for (let i = 0; i < count; i++) particles.push(new Particle());
+        }
+
+        function connectParticles() {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 120) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(212, 168, 83, ${0.06 * (1 - dist / 120)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            connectParticles();
+            requestAnimationFrame(animateParticles);
+        }
+
+        initParticles();
+        animateParticles();
+
+        document.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+        document.addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
+
+        // ===== PASSWORD GENERATOR =====
+        const charSets = {
+            uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            lowercase: 'abcdefghijklmnopqrstuvwxyz',
+            numbers: '0123456789',
+            symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+        };
+
+        const pronConsonants = 'bcdfghjklmnpqrstvwxyz';
+        const pronVowels = 'aeiou';
+
+        let currentPassword = '';
+        let history = [];
+
+        function getActiveOptions() {
+            const options = {};
+            document.querySelectorAll('.option-item').forEach(item => {
+                options[item.dataset.option] = item.classList.contains('active');
+            });
+            return options;
+        }
+
+        function generateSecureRandom(max) {
+            const array = new Uint32Array(1);
+            crypto.getRandomValues(array);
+            return array[0] % max;
+        }
+
+        function generatePassword() {
+            const options = getActiveOptions();
+            const length = parseInt(document.getElementById('lengthSlider').value);
+            const excludeChars = document.getElementById('excludeChars').value;
+            const isPronounceable = document.getElementById('pronounceable').checked;
+
+            if (!Object.values(options).some(v => v)) {
+                showToast('⚠️ اختر خيار واحد على الأقل!');
+                return;
+            }
+
+            const spinner = document.getElementById('spinner');
+            spinner.style.display = 'block';
+
+            setTimeout(() => {
+                let password = '';
+                let charset = '';
+
+                if (isPronounceable) {
+                    for (let i = 0; i < length; i++) {
+                        const pool = (i % 2 === 0) ? pronConsonants : pronVowels;
+                        let charPool = pool;
+                        if (excludeChars) charPool = charPool.split('').filter(c => !excludeChars.includes(c)).join('');
+                        if (charPool.length === 0) charPool = pool;
+                        password += charPool[generateSecureRandom(charPool.length)];
+                    }
+                    let suffix = '';
+                    if (options.numbers) {
+                        let nums = charSets.numbers;
+                        if (excludeChars) nums = nums.split('').filter(c => !excludeChars.includes(c)).join('');
+                        if (nums.length === 0) nums = charSets.numbers;
+                        for (let i = 0; i < Math.max(2, Math.floor(length * 0.15)); i++) suffix += nums[generateSecureRandom(nums.length)];
+                    }
+                    if (options.symbols) {
+                        let syms = charSets.symbols;
+                        if (excludeChars) syms = syms.split('').filter(c => !excludeChars.includes(c)).join('');
+                        if (syms.length === 0) syms = charSets.symbols;
+                        for (let i = 0; i < Math.max(1, Math.floor(length * 0.08)); i++) suffix += syms[generateSecureRandom(syms.length)];
+                    }
+                    if (suffix) {
+                        const passArr = password.split('');
+                        for (const ch of suffix) {
+                            const pos = generateSecureRandom(passArr.length + 1);
+                            passArr.splice(pos, 0, ch);
+                        }
+                        password = passArr.join('');
+                    }
+                } else {
+                    for (const [key, active] of Object.entries(options)) {
+                        if (active) {
+                            let set = charSets[key];
+                            if (excludeChars) set = set.split('').filter(c => !excludeChars.includes(c)).join('');
+                            if (set.length === 0) set = charSets[key];
+                            charset += set;
+                        }
+                    }
+
+                    if (charset.length === 0) {
+                        showToast('⚠️ مجموعة الأحرف فارغة بعد الاستبعاد!');
+                        spinner.style.display = 'none';
+                        return;
+                    }
+
+                    let guaranteed = [];
+                    for (const [key, active] of Object.entries(options)) {
+                        if (active) {
+                            let set = charSets[key];
+                            if (excludeChars) set = set.split('').filter(c => !excludeChars.includes(c)).join('');
+                            if (set.length === 0) set = charSets[key];
+                            guaranteed.push(set[generateSecureRandom(set.length)]);
+                        }
+                    }
+
+                    const remaining = length - guaranteed.length;
+                    for (let i = 0; i < remaining; i++) {
+                        password += charset[generateSecureRandom(charset.length)];
+                    }
+
+                    password = password + guaranteed.join('');
+                    password = shuffleString(password);
+                }
+
+                currentPassword = password;
+                displayPassword(password);
+                updateStrength(password, charset.length);
+                addToHistory(password);
+                updateStats(password, charset.length);
+                createBurstEffect(document.getElementById('generateBtn'));
+
+                spinner.style.display = 'none';
+            }, 300);
+        }
+
+        function shuffleString(str) {
+            const arr = str.split('');
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = generateSecureRandom(i + 1);
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr.join('');
+        }
+
+        function displayPassword(password) {
+            const container = document.getElementById('passwordText');
+            container.innerHTML = '';
+            [...password].forEach((char, index) => {
+                const span = document.createElement('span');
+                span.className = 'char';
+                span.textContent = char;
+                span.style.animationDelay = `${index * 0.02}s`;
+                if (/[A-Z]/.test(char)) span.classList.add('upper');
+                else if (/[a-z]/.test(char)) span.classList.add('letter');
+                else if (/[0-9]/.test(char)) span.classList.add('number');
+                else span.classList.add('symbol');
+                container.appendChild(span);
+            });
+        }
+
+        function updateStrength(password, poolSize) {
+            const meter = document.getElementById('strengthMeter');
+            const text = document.getElementById('strengthText');
+            const entropy = password.length * Math.log2(poolSize || 1);
+            let level, label;
+
+            if (entropy < 30) { level = 'strength-weak'; label = 'ضعيفة جداً'; }
+            else if (entropy < 50) { level = 'strength-weak'; label = 'ضعيفة'; }
+            else if (entropy < 70) { level = 'strength-fair'; label = 'متوسطة'; }
+            else if (entropy < 90) { level = 'strength-good'; label = 'جيدة'; }
+            else if (entropy < 120) { level = 'strength-strong'; label = 'قوية'; }
+            else { level = 'strength-very-strong'; label = 'قوية جداً ✦'; }
+
+            meter.className = `strength-meter ${level}`;
+            text.textContent = label;
+        }
+
+        function updateStats(password, poolSize) {
+            const entropy = password.length * Math.log2(poolSize || 1);
+            document.getElementById('statLength').textContent = password.length;
+            document.getElementById('statEntropy').textContent = Math.round(entropy);
+        }
+
+        function updateLength() {
+            const val = document.getElementById('lengthSlider').value;
+            document.getElementById('lengthValue').textContent = val;
+            const slider = document.getElementById('lengthSlider');
+            const pct = ((val - 4) / (128 - 4)) * 100;
+            slider.style.background = `linear-gradient(to left, rgba(212, 168, 83, 0.3) ${pct}%, rgba(255,255,255,0.06) ${pct}%)`;
+        }
+
+        function toggleOption(el) {
+            el.classList.toggle('active');
+            if (document.querySelectorAll('.option-item.active').length === 0) {
+                el.classList.add('active');
+                showToast('⚠️ يجب اختيار خيار واحد على الأقل');
+            }
+        }
+
+        function copyPassword() {
+            if (!currentPassword) { showToast('⚠️ أنشئ كلمة مرور أولاً!'); return; }
+            navigator.clipboard.writeText(currentPassword).then(() => {
+                const btn = document.getElementById('copyBtn');
+                btn.classList.add('copied');
+                btn.innerHTML = '<span class="tooltip">تم النسخ!</span>✅';
+                showToast('✅ تم نسخ كلمة المرور!');
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    btn.innerHTML = '<span class="tooltip">نسخ</span>📋';
+                }, 2000);
+            }).catch(() => {
+                const ta = document.createElement('textarea');
+                ta.value = currentPassword;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                showToast('✅ تم نسخ كلمة المرور!');
+            });
+        }
+
+        function addToHistory(password) {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+            history.unshift({ password, time: timeStr });
+            if (history.length > 20) history.pop();
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('historyList');
+            const clearBtn = document.getElementById('clearHistoryBtn');
+
+            if (history.length === 0) {
+                list.innerHTML = `<div class="empty-history"><div class="empty-icon">📝</div><div>لا توجد كلمات مرور بعد</div></div>`;
+                clearBtn.style.display = 'none';
+                return;
+            }
+
+            clearBtn.style.display = 'block';
+            list.innerHTML = `<div class="history-list">${history.map((item, i) => `
+                <div class="history-item" style="animation-delay: ${i * 0.05}s">
+                    <div class="history-password">${escapeHtml(item.password)}</div>
+                    <span class="history-time">${item.time}</span>
+                    <button class="history-copy-btn" onclick="copyFromHistory('${escapeForAttr(item.password)}')">📋</button>
+                </div>
+            `).join('')}</div>`;
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function escapeForAttr(str) {
+            return str.replace(/'/g, "\\'").replace(/"/g, '\\"');
+        }
+
+        function copyFromHistory(password) {
+            navigator.clipboard.writeText(password).then(() => showToast('✅ تم نسخ كلمة المرور من السجل!'))
+                .catch(() => showToast('✅ تم النسخ!'));
+        }
+
+        function clearHistory() {
+            history = [];
+            renderHistory();
+            showToast('🗑️ تم مسح السجل');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-text').textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        function createBurstEffect(element) {
+            const rect = element.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+            const container = document.createElement('div');
+            container.className = 'particle-burst';
+            container.style.left = cx + 'px';
+            container.style.top = cy + 'px';
+            const colors = ['#d4a853', '#f0d68a', '#1abc9c', '#2ecc71', '#b8860b', '#fff'];
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'burst-particle';
+                const angle = (Math.PI * 2 * i) / 20;
+                const distance = 40 + Math.random() * 60;
+                particle.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
+                particle.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.width = (3 + Math.random() * 5) + 'px';
+                particle.style.height = particle.style.width;
+                container.appendChild(particle);
+            }
+            document.body.appendChild(container);
+            setTimeout(() => container.remove(), 1000);
+        }
+
+        // ===== PWA INSTALL =====
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', e => {
+            e.preventDefault();
+            deferredPrompt = e;
+            setTimeout(() => document.getElementById('installBanner').classList.add('show'), 2000);
+        });
+
+        document.getElementById('installBtn').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                await deferredPrompt.userChoice;
+                deferredPrompt = null;
+            }
+            document.getElementById('installBanner').classList.remove('show');
+        });
+
+        document.getElementById('installDismiss').addEventListener('click', () => {
+            document.getElementById('installBanner').classList.remove('show');
+        });
+
+        // ===== SERVICE WORKER =====
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(() => {});
+        }
+
+        // ===== KEYBOARD SHORTCUTS =====
+        document.addEventListener('keydown', e => {
+            if (e.ctrlKey && e.key === 'Enter') generatePassword();
+            if (e.ctrlKey && e.key === 'c' && currentPassword && !window.getSelection().toString()) copyPassword();
+        });
+
+        // ===== INIT =====
+        updateLength();
+        setTimeout(() => generatePassword(), 800);
+    </script>
+</body>
+</html>
